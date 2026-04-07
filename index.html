@@ -67,7 +67,7 @@
 
 <div class="container">
     <header>
-        <h1>Q1 游戏接入与测试审核效能&透视总结 (v0.5.1)</h1>
+        <h1>Q1 游戏接入与测试审核效能&透视总结 (v0.5.2)</h1>
         <div class="subtitle">接入端产能 · 测试端表现 · 上架端转化</div>
     </header>
 
@@ -96,6 +96,19 @@
             <h3>2.2 核心 CP 测试效能散点透视</h3>
             <div id="chart-test-cp" class="chart-container"></div>
             <div class="insight"><strong>阶段总结：</strong> ALBAYOO 与 齐悦互娱 保持了出色的双高表现（高提测、高通过率）。青岛卡乐网络和 Connexus Cure 的测试通过率略低于大盘均值，提测往复循环较多，需在提测前仔细核对，避免因重复或类似问题影响上架时效。</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>2.3 驳回原因类型分布对比（国内 vs 海外 · Q1 vs Q4）</h3>
+            <div id="chart-fail-category" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> <strong>激励AD问题</strong>是国内外产品线最主要的驳回原因，Q1 国内激励AD问题驳回次数（85次）较 Q4（44次）大幅增长，体量扩张明显；<strong>ID/配置问题</strong>在 Q1 国内线上升显著（47次 vs Q4 17次），与接入量整体增加有关，建议提测前CP加强自查流程；海外 Q1 <strong>合规问题</strong>（如引导跳转GP）占比上升，需重点关注。</div>
+        </div>
+        <div class="card">
+            <h3>2.4 驳回原因 Top 10 明细（26年Q1 国内 vs 海外）</h3>
+            <div id="chart-fail-detail" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> 细化至具体驳回原因，<strong>「激励AD-缺少AD标或文字描述」</strong>高居两条产品线首位（国内46次、海外20次），为全局最高频问题，说明该类规范在CP端认知仍有缺口。<strong>「appid或广告id不一致」</strong>在国内线排名第2（35次），显示提测前配置核查环节薄弱；海外线 <strong>「游戏Bug」</strong>（10次）明显高于国内同比占比，反映海外CP游戏的质量管控尚待加强。</div>
         </div>
     </div>
 
@@ -217,8 +230,67 @@
         }]
     });
 
+    // --- 图表 2.3: 驳回原因类型分布对比 ---
+    const chart7 = echarts.init(document.getElementById('chart-fail-category'));
+    chart7.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: { data: ['国内Q4(25)', '国内Q1(26)', '海外Q4(25)', '海外Q1(26)'], top: 4 },
+        grid: { left: '3%', right: '4%', bottom: '18%', top: '60px', containLabel: true },
+        xAxis: {
+            type: 'category',
+            data: ['激励AD问题', 'ID/配置问题', '兼容性问题', '横幅/插屏AD', '合规问题', '游戏Bug', '其他', 'CP主动驳回'],
+            axisLabel: { interval: 0, rotate: 28, fontSize: 11 }
+        },
+        yAxis: { type: 'value', name: '驳回次数' },
+        series: [
+            { name: '国内Q4(25)', type: 'bar', barGap: '5%', data: [44, 17, 15, 8, 8, 6, 24, 2], itemStyle: { color: '#a0c8e8' } },
+            { name: '国内Q1(26)', type: 'bar', data: [85, 47, 23, 16, 21, 14, 34, 9], itemStyle: { color: '#4e79a7' } },
+            { name: '海外Q4(25)', type: 'bar', barGap: '5%', data: [26, 4, 3, 9, 5, 6, 12, 1], itemStyle: { color: '#f9c784' } },
+            { name: '海外Q1(26)', type: 'bar', data: [35, 12, 4, 4, 17, 10, 13, 1], itemStyle: { color: '#f28e2b' } }
+        ]
+    });
+
+    // --- 图表 2.4: 驳回原因 Top10 明细 国内 vs 海外 Q1 ---
+    const chart8 = echarts.init(document.getElementById('chart-fail-detail'));
+    chart8.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: { data: ['国内Q1(26)', '海外Q1(26)'], top: 4 },
+        grid: { left: '3%', right: '4%', bottom: '22%', top: '50px', containLabel: true },
+        xAxis: {
+            type: 'category',
+            data: [
+                '激励AD-缺少\nAD标或文字描述',
+                'appid/广告id\n不一致',
+                '横幅AD-\n遮挡按钮',
+                '激励AD-\n发放描述不符',
+                '游戏Bug',
+                '激励AD-未明\n确奖励内容',
+                'IAA存在\n内购内容',
+                '游戏&设备\n语言不一致',
+                '兼容测试\nFAIL',
+                'icon/名称与\nGP差异大'
+            ],
+            axisLabel: { interval: 0, fontSize: 10 }
+        },
+        yAxis: { type: 'value', name: '驳回次数' },
+        series: [
+            {
+                name: '国内Q1(26)', type: 'bar', barMaxWidth: 28,
+                data: [46, 35, 14, 12, 14, 10, 5, 12, 11, 6],
+                itemStyle: { color: '#4e79a7' },
+                label: { show: true, position: 'top', fontSize: 11 }
+            },
+            {
+                name: '海外Q1(26)', type: 'bar', barMaxWidth: 28,
+                data: [20, 11, 3, 4, 10, 5, 7, 0, 4, 5],
+                itemStyle: { color: '#f28e2b' },
+                label: { show: true, position: 'top', fontSize: 11 }
+            }
+        ]
+    });
+
     window.addEventListener('resize', () => {
-        [chart1, chart2, chart3, chart4, chart5, chart6].forEach(c => c.resize());
+        [chart1, chart2, chart3, chart4, chart5, chart6, chart7, chart8].forEach(c => c.resize());
     });
 </script>
 
