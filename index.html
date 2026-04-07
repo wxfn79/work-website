@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q1 游戏业务生命周期大盘 (v0.5)</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --card-bg: #ffffff;
+            --accent-blue: #0066cc;
+            --accent-green: #34c759;
+            --accent-orange: #f28e2b;
+            --accent-red: #e15759;
+            --border-radius: 16px;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 16px; color: var(--text-muted); }
+        .module-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #d2d2d7;
+            color: var(--text-main);
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .chart-container { width: 100%; height: 380px; }
+        .insight {
+            background: #fbfbfd;
+            border-left: 4px solid var(--accent-blue);
+            padding: 16px 20px;
+            font-size: 14px;
+            margin-top: 16px;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.6;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Q1 游戏接入与测试审核效能&透视总结 (v0.5.1)</h1>
+        <div class="subtitle">引入端产能 · 测试端表现 · 上架端转化</div>
+    </header>
+
+    <div class="module-title">1. 游戏引入阶段 (商务前端数据)</div>
+    <div class="grid-2">
+        <div class="card">
+            <h3>1.1 各商务部门接入产能走势</h3>
+            <div id="chart-access-dept" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> 商务一部在Q1保持了较高的引入活跃度，尤其在3月份达到产能峰值（62款）。销售二部的整体接入节奏相对平缓，两部门在引入体量上呈现出不同的业务节奏。</div>
+        </div>
+        <div class="card">
+            <h3>1.2 CP 接入游戏数量排名 (Top 5)</h3>
+            <div id="chart-access-cp" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> HONG KONG YOUZHI 在前端接入环节贡献了较高的产品数量（24款）。综合后续转化数据来看，其后置链路的留存率存在提升空间，建议在前期引入时增加一定的品控筛查。</div>
+        </div>
+    </div>
+
+    <div class="module-title">2. 游戏测试品控数据&透视总结</div>
+    <div class="grid-2">
+        <div class="card">
+            <h3>2.1 国内与海外 CP 测试大盘表现对比</h3>
+            <div id="chart-test-region" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> 国内产品的提测体量基数较大，且整体通过率表现相对稳定。海外产品的整体测试驳回率偏高（46.1%），海外CP需进一步了解相关的合规与适配标准，以提升首测合格率。</div>
+        </div>
+        <div class="card">
+            <h3>2.2 核心 CP 测试效能散点透视</h3>
+            <div id="chart-test-cp" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> ALBAYOO 与 齐悦互娱 保持了出色的双高表现（高提测、高通过率）。青岛卡乐网络和 Connexus Cure 的测试通过率略低于大盘均值，提测往复循环较多，需在提测前仔细核对，避免因重复或类似问题影响上架时效。</div>
+        </div>
+    </div>
+
+    <div class="module-title">3. 新游上架&透视总结</div>
+    <div class="grid-2">
+        <div class="card">
+            <h3>3.1 上架数量历史水位基线 (同比/环比)</h3>
+            <div id="chart-publish-trend" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> 26年Q1上架总量达 125 款，较去年同期（89款）和上季度（115款）均实现了稳步的良性增长。这表明在排除前置链路损耗后，最终落地环节的产出依然处于上升通道。</div>
+        </div>
+        <div class="card">
+            <h3>3.2 核心 CP 上架实际贡献榜 (Top 5)</h3>
+            <div id="chart-publish-cp" class="chart-container"></div>
+            <div class="insight"><strong>阶段总结：</strong> Finz Games 和 齐悦互娱 等CP在最终上架阶段表现优异，实现了从接入到上架的高效流转。同时注意到，部分前端高接入量的CP暂未产生对等的上架贡献，后续可关注其漏斗转化瓶颈。</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 图表 1: 部门接入产能趋势 ---
+    const chart1 = echarts.init(document.getElementById('chart-access-dept'));
+    chart1.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['商务一部', '销售二部'] },
+        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'category', data: ['1月', '2月', '3月'] },
+        yAxis: { type: 'value', name: '接入产品数' },
+        series: [
+            { name: '商务一部', type: 'line', smooth: true, symbolSize: 8, data: [34, 15, 62], lineStyle: { width: 3 }, itemStyle: { color: '#4e79a7' } },
+            { name: '销售二部', type: 'line', smooth: true, symbolSize: 8, data: [11, 4, 13], lineStyle: { width: 3 }, itemStyle: { color: '#f28e2b' } }
+        ]
+    });
+
+    // --- 图表 2: 接入源头溯源 (TOP CP) ---
+    const chart2 = echarts.init(document.getElementById('chart-access-cp'));
+    chart2.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        grid: { left: '3%', right: '8%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'value', name: '接入数量' },
+        yAxis: { type: 'category', inverse: true, data: ['HONG KONG YOUZHI', 'Finz Games', 'Vie Apps Studio', '齐悦互娱', 'Gamescotch Studios'], axisLabel: { width: 110, overflow: 'truncate' } },
+        series: [{
+            type: 'bar',
+            data: [
+                { value: 24, itemStyle: { color: '#f28e2b' } }, 
+                { value: 13, itemStyle: { color: '#76b7b2' } },
+                { value: 9, itemStyle: { color: '#76b7b2' } },
+                { value: 7, itemStyle: { color: '#76b7b2' } },
+                { value: 6, itemStyle: { color: '#76b7b2' } }
+            ],
+            label: { show: true, position: 'right' }
+        }]
+    });
+
+    // --- 图表 3: 国内 vs 海外测试质量 ---
+    const chart3 = echarts.init(document.getElementById('chart-test-region'));
+    chart3.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: { data: ['PASS 通过', 'FAIL 驳回'] },
+        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'category', data: ['国内产品线\n(共 325 次测试)', '海外产品线\n(共 167 次测试)'] },
+        yAxis: { type: 'value', name: '测试次数' },
+        series: [
+            { name: 'PASS 通过', type: 'bar', stack: 'total', data: [217, 90], itemStyle: { color: '#59a14f' }, label: {show:true, position:'inside'} },
+            { name: 'FAIL 驳回', type: 'bar', stack: 'total', data: [108, 77], itemStyle: { color: '#e15759' }, label: {show:true, position:'inside'} }
+        ]
+    });
+
+    // --- 图表 4: CP 提测效能榜单 (数量/通过率组合图) ---
+    const chart4 = echarts.init(document.getElementById('chart-test-cp'));
+    chart4.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        legend: { data: ['提测总次数', '测试通过率(%)'] },
+        grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+        xAxis: { type: 'category', data: ['齐悦互娱', 'HIGGS TECH', 'Finz Games', 'GWL TECH', '青岛卡乐', 'ALBAYOO', 'Connexus'], axisLabel: { interval: 0, rotate: 30 } },
+        yAxis: [
+            { type: 'value', name: '测试次数' },
+            { type: 'value', name: '通过率', min: 0, max: 100, axisLabel: { formatter: '{value} %' } }
+        ],
+        series: [
+            { name: '提测总次数', type: 'bar', data: [40, 26, 24, 22, 19, 18, 13], itemStyle: { color: '#a0cbe8' } },
+            { name: '测试通过率(%)', type: 'line', yAxisIndex: 1, data: [87.5, 76.9, 75.0, 68.2, 52.6, 100.0, 46.2], itemStyle: { color: '#f28e2b' }, lineStyle: { width: 3 }, symbolSize: 8 }
+        ]
+    });
+
+    // --- 图表 5: 上架产能历史水位 (使用真实提取数据) ---
+    const chart5 = echarts.init(document.getElementById('chart-publish-trend'));
+    chart5.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'category', data: ['25年 Q1\n(去年同期)', '25年 Q4\n(上一季度)', '26年 Q1\n(本季产出)'] },
+        yAxis: { type: 'value', name: '实际上架款数' },
+        series: [{
+            data: [
+                { value: 89, itemStyle: { color: '#b0c4de' } },  
+                { value: 115, itemStyle: { color: '#b0c4de' } }, 
+                { value: 125, itemStyle: { color: '#4e79a7' } }  
+            ],
+            type: 'bar', barWidth: '45%', label: { show: true, position: 'top', fontWeight: 'bold' }
+        }]
+    });
+
+    // --- 图表 6: CP 真实上架贡献榜 ---
+    const chart6 = echarts.init(document.getElementById('chart-publish-cp'));
+    chart6.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        grid: { left: '3%', right: '8%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'value', name: '上架款数' },
+        yAxis: { type: 'category', inverse: true, data: ['Finz Games', 'Vie Apps Studio', '齐悦互娱', 'Epic Byte Studio', 'GWL TECH'], axisLabel: { width: 110, overflow: 'truncate' } },
+        series: [{
+            type: 'bar',
+            data: [
+                { value: 13, itemStyle: { color: '#59a14f' } },
+                { value: 9, itemStyle: { color: '#59a14f' } },
+                { value: 7, itemStyle: { color: '#59a14f' } },
+                { value: 4, itemStyle: { color: '#8cd17d' } },
+                { value: 4, itemStyle: { color: '#8cd17d' } }
+            ],
+            label: { show: true, position: 'right' }
+        }]
+    });
+
+    window.addEventListener('resize', () => {
+        [chart1, chart2, chart3, chart4, chart5, chart6].forEach(c => c.resize());
+    });
+</script>
+
+</body>
+</html>
